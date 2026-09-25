@@ -2,6 +2,46 @@
 
 Dashboard académico para registrar y analizar pruebas de usabilidad en tiempo real.
 
+## Cómo funciona
+
+La aplicación centraliza los resultados de una sesión de investigación UX. Cada evaluación representa a una persona realizando una tarea concreta y combina métricas cuantitativas con observaciones cualitativas.
+
+### Flujo de una evaluación
+
+1. Desde **Nueva evaluación**, se selecciona el tipo de tarea: formulario, búsqueda, tabla, botón o navegación.
+2. Se registra el evaluador y los datos observados: tiempo empleado, cantidad de clics, tasa de error, nivel de satisfacción, frustración y comentarios.
+3. Al guardar, el sistema crea una evaluación con fecha, estado e identificador. El índice de usabilidad se calcula automáticamente según el tipo de tarea.
+4. La evaluación aparece inmediatamente en el resumen y en el registro de actividad. Los indicadores generales se recalculan con todos los resultados disponibles.
+5. Los resultados pueden buscarse por tarea, persona o comentario, filtrarse por tipo, tasa de error e índice mínimo, y exportarse a un reporte PDF.
+
+### Qué muestra el dashboard
+
+- **Resumen:** índice promedio, tiempo promedio, tasa de error, cantidad de evaluaciones y rendimiento por tipo de tarea.
+- **Evaluaciones:** listado detallado de tareas, evaluadores, tiempos, errores e índices individuales.
+- **Participantes:** personas evaluadas y cantidad de pruebas completadas por cada una.
+- **Métricas de éxito:** comparación con los objetivos de la sesión, como índice promedio mínimo de 80 y tasa de error menor al 5 %.
+- **Historial:** consulta de los registros guardados con las mismas herramientas de búsqueda y filtrado.
+
+### Cómo se calcula el índice
+
+El dominio usa una clase base `EvaluacionUsabilidad` y una implementación específica para cada tipo de tarea. Todas las fórmulas producen un valor entre 0 y 100:
+
+- **Formulario:** pondera velocidad, precisión y satisfacción.
+- **Botón:** pondera tiempo de respuesta, esfuerzo medido por clics y precisión.
+- **Navegación:** pondera orientación, velocidad y nivel de frustración.
+- **Búsqueda y tabla:** usan una fórmula general basada en precisión, velocidad y satisfacción.
+
+El promedio del resumen es la media de los índices individuales. Por eso, mejorar el tiempo, reducir errores o aumentar la satisfacción puede cambiar tanto el resultado de una evaluación como los indicadores de la sesión.
+
+### Dónde se guardan los datos
+
+La aplicación tiene dos modos de funcionamiento:
+
+- **Sin Supabase:** utiliza el dataset inicial de `src/data/mockData.ts` y mantiene los nuevos registros en la sesión actual del navegador.
+- **Con Supabase:** lee y guarda las evaluaciones en la tabla `evaluaciones`. También escucha eventos Realtime, por lo que un registro creado, actualizado o eliminado se refleja en las pestañas conectadas.
+
+La capa `EvaluacionRepository` oculta esta diferencia para que el dashboard trabaje con el mismo formato de datos en ambos modos. La creación de una evaluación pasa por `crearEvaluacion()`, que selecciona la fórmula correspondiente mediante polimorfismo.
+
 ## Ejecutar
 
 ```bash
@@ -70,21 +110,6 @@ supabase/
 ## Arquitectura POO
 
 `EvaluacionUsabilidad` define el contrato común. `EvaluacionFormulario`, `EvaluacionBoton` y `EvaluacionNavegacion` sobrescriben `calcularIndiceUsabilidad()` con fórmulas específicas; búsqueda y tabla usan `EvaluacionGenerica`. `crearEvaluacion()` funciona como fábrica polimórfica.
-
-## Historial Git simulado
-
-```bash
-git commit -m "feat: inicializar dashboard React con TypeScript"
-git commit -m "feat: modelar evaluaciones de usabilidad con POO"
-git commit -m "feat: agregar métricas cuantitativas y cualitativas"
-git commit -m "feat: integrar repositorio local y cliente Supabase"
-git commit -m "feat: habilitar suscripciones de evaluaciones en tiempo real"
-git commit -m "feat: construir resumen visual Dark Corporate"
-git commit -m "feat: agregar formulario de registro de tareas"
-git commit -m "feat: incorporar exportación de reportes PDF"
-git commit -m "refactor: separar dominio servicios y presentación"
-git commit -m "docs: documentar instalación arquitectura y configuración"
-```
 
 ## Validación
 
