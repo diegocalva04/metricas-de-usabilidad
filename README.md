@@ -16,7 +16,28 @@ VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
 VITE_SUPABASE_ANON_KEY=tu-clave-anon
 ```
 
-La tabla `evaluaciones` debe aceptar las columnas del tipo `EvaluacionDTO` y tener Realtime habilitado.
+La configuración completa de la tabla está en [supabase/schema.sql](supabase/schema.sql).
+
+### Configurar Supabase
+
+1. Entra en [supabase.com](https://supabase.com), crea un proyecto nuevo y espera a que termine de provisionarse.
+2. Abre **SQL Editor**, pega el contenido de `supabase/schema.sql` y pulsa **Run**.
+3. En **Project Settings > API**, copia la URL del proyecto y la clave pública `anon`.
+4. Copia `.env.example` como `.env.local` y reemplaza sus valores:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+```env
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=tu-clave-anon
+```
+
+5. Reinicia `npm run dev`. La app dejará de usar el dataset local y leerá `evaluaciones` desde Supabase.
+6. Abre dos pestañas del dashboard. Al registrar una evaluación en una, la otra debe actualizarse mediante Realtime.
+
+La política SQL incluida permite el acceso anónimo porque esta es una demo académica. Para producción, activa Supabase Auth y cambia las políticas RLS para exigir `authenticated`.
 
 ## Estructura
 
@@ -26,6 +47,9 @@ src/
   data/mockData.ts                 # dataset para la exposición
   services/supabase.ts             # repositorio y suscripción Realtime
   services/reportService.ts        # exportación con jsPDF
+supabase/
+  schema.sql                       # tabla, RLS, índices y publicación Realtime
+.env.example                       # variables públicas requeridas
   App.tsx                          # dashboard y flujo de registro
   App.css                          # identidad visual Dark Corporate
 ```
