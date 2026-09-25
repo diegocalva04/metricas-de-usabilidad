@@ -39,6 +39,19 @@ VITE_SUPABASE_ANON_KEY=tu-clave-anon
 
 La política SQL incluida permite el acceso anónimo porque esta es una demo académica. Para producción, activa Supabase Auth y cambia las políticas RLS para exigir `authenticated`.
 
+## Desplegar en Vercel
+
+El proyecto incluye [vercel.json](vercel.json) con el comando de build y la salida `dist`.
+
+1. Entra en [vercel.com/new](https://vercel.com/new) e inicia sesión con GitHub.
+2. Importa `diegocalva04/metricas-de-usabilidad`.
+3. Mantén los valores detectados por Vercel: framework **Vite**, build `npm run build` y output `dist`.
+4. En **Environment Variables**, agrega `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` con los valores de tu proyecto Supabase. Activa **Production**, **Preview** y **Development** si quieres que todos los despliegues usen la base.
+5. Pulsa **Deploy**. Cada `git push` posterior generará un nuevo despliegue.
+6. En Supabase, agrega el dominio de Vercel en **Authentication > URL Configuration** si después incorporas login.
+
+No subas `.env.local` ni claves `service_role`. `.env.example` contiene únicamente placeholders; las variables reales deben configurarse en Vercel.
+
 ## Estructura
 
 ```text
